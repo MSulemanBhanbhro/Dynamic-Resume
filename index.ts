@@ -6,6 +6,7 @@ const editResume = document.getElementById("editResume") as HTMLButtonElement;
 
 
 
+
 form?.addEventListener('submit', function (event: Event): void {
     event.preventDefault();
     const name = (document.getElementById("name") as HTMLInputElement).value;
@@ -35,5 +36,47 @@ editResume?.addEventListener('click', function (): void {
     if (side) side.style.width = "100%";
     if (resumeOutput) resumeOutput.style.display = "none";
 });
+
+function pdfDownload() {
+    const element = document.getElementById('resumeoutput');
+    
+    if (element.style.display !== "none") { 
+      const opt = {
+        margin: 1,
+        filename: 'resume.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+      html2pdf().from(element).set(opt).save();
+    } else {
+      alert("Please generate the resume first.");
+    }
+  }
+
+  function generateSharableLink() {
+    const element = document.getElementById('resumeoutput');
+    
+    if (element.style.display !== "none") { 
+      const blob = new Blob([element.innerHTML], { type: 'text/html' });
+      const sharableLink = URL.createObjectURL(blob);
+  
+      
+      const linkOutput = document.createElement('input');
+      linkOutput.type = 'text';
+      linkOutput.value = sharableLink;
+      linkOutput.readOnly = true;
+      document.body.appendChild(linkOutput);
+  
+      linkOutput.select();
+      document.execCommand('copy');
+      alert("Sharable link has been copied to clipboard: " );
+  
+      // Clean up the input field after copy
+      setTimeout(() => linkOutput.remove(), 5000);
+    } else {
+      alert("Please generate the resume first.");
+    }
+  }
 
 

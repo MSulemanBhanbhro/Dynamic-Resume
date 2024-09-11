@@ -24,3 +24,39 @@ editResume === null || editResume === void 0 ? void 0 : editResume.addEventListe
     if (resumeOutput)
         resumeOutput.style.display = "none";
 });
+function pdfDownload() {
+    var element = document.getElementById('resumeoutput');
+    if (element.style.display !== "none") {
+        var opt = {
+            margin: 1,
+            filename: 'resume.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().from(element).set(opt).save();
+    }
+    else {
+        alert("Please generate the resume first.");
+    }
+}
+function generateSharableLink() {
+    var element = document.getElementById('resumeoutput');
+    if (element.style.display !== "none") {
+        var blob = new Blob([element.innerHTML], { type: 'text/html' });
+        var sharableLink = URL.createObjectURL(blob);
+        var linkOutput_1 = document.createElement('input');
+        linkOutput_1.type = 'text';
+        linkOutput_1.value = sharableLink;
+        linkOutput_1.readOnly = true;
+        document.body.appendChild(linkOutput_1);
+        linkOutput_1.select();
+        document.execCommand('copy');
+        alert("Sharable link has been copied to clipboard: ");
+        // Clean up the input field after copy
+        setTimeout(function () { return linkOutput_1.remove(); }, 5000);
+    }
+    else {
+        alert("Please generate the resume first.");
+    }
+}
